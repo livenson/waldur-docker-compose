@@ -67,6 +67,76 @@ docker compose pull
 docker compose restart
 ```
 
+## Upgrade Instructions for PostgreSQL Images
+
+### Upgrade Prerequisites
+
+- Backup existing data (if needed).
+
+#### Backup Commands
+
+You can back up the database using `pg_dumpall` or `pg_dump` (for specific tables). Make sure to replace `<your_postgres_container>` and `<db_user>` with the appropriate values.
+
+**Backup the entire database:**
+
+```bash
+docker exec -it <your_postgres_container> pg_dumpall -U <db_user> > /path/to/backup/waldur_upgrade_backup.sql
+```
+
+**Shut down containers:**
+
+```bash
+docker compose down
+```
+
+### Upgrade Steps
+
+1. **Update Docker Compose File**
+
+    Update the PostgreSQL images in `docker-compose.yml` to the needed version.
+
+    ```yaml
+    waldur-db:
+        container_name: waldur-db
+        image: '${DOCKER_REGISTRY_PREFIX}library/postgres:<your_version>'
+        ...
+    keycloak-db:
+        container_name: keycloak-db
+        image: '${DOCKER_REGISTRY_PREFIX}library/postgres:<your_version>'
+    ```
+
+2. **Pull the New Images and Recreate the Containers**
+    Ensure that all containers are recreated with the new images.
+
+    Pull the new PostgreSQL images and recreate the containers:
+
+    ```bash
+    docker compose pull && docker compose up -d
+    ```
+
+3. **Optional: Restore Data** *(if backups have been made)*
+
+    Restore the contents of the database from the dump file:
+
+    ```bash
+    cat /path/to/backup/waldur_upgrade_backup.sql | docker exec -i <your_postgres_container> psql -U <db_user>
+    ```
+
+4. **Verify the Upgrade**
+
+    Verify the containers are running:
+
+    ```bash
+    docker ps -a
+    ```
+
+    Check container logs for errors:
+
+    ```bash
+    docker logs waldur-db
+    docker logs keycloak-db
+    ```
+
 ## Using TLS
 
 This setup supports following types of SSL certificates:
