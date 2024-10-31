@@ -33,6 +33,7 @@ Test compose configuration:
     TLS: internal
   script:
     - cp -vf .env.example .env
+    - echo "DOCKER_REGISTRY_PREFIX=registry.hpc.ut.ee/mirror/" >> .env
     - docker-compose -v
     - docker context list
     - docker info
