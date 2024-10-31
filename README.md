@@ -67,6 +67,128 @@ docker compose pull
 docker compose restart
 ```
 
+## Upgrade Instructions for PostgreSQL Images
+
+### Upgrade Prerequisites
+
+- Backup existing data (if needed).
+
+#### Backup Commands
+
+You can back up the database using `pg_dumpall`.
+
+**For Waldur DB:**
+
+```bash
+docker exec -it waldur-db pg_dumpall -U waldur > /path/to/backup/waldur_upgrade_backup.sql
+```
+
+**For Keycloak DB:**
+
+```bash
+docker exec -it keycloak-db pg_dumpall -U keycloak > /path/to/backup/keycloak_upgrade_backup.sql
+```
+
+**Shut down containers:**
+
+```bash
+docker compose down
+```
+
+> **Note:**
+> Before upgrading PostgreSQL, please delete the `pgsql` folder within the project directory if it exists, as well as the `keycloak_db` docker volume if it exists.
+> These were created with the previous PostgreSQL version, and they will be recreated with docker compose during upgrade.
+>
+> You can remove the `pgsql` folder by running:
+>
+> ```bash
+> sudo rm -r pgsql/
+> ```
+>
+>
+> To remove the `keycloak_db` volume, run:
+>
+>```bash
+> docker volume rm waldur-docker-compose_keycloak_db
+>```
+>
+> **Warning**: This action will delete your existing PostgreSQL data. Ensure it is backed up before proceeding.
+
+### Upgrade Steps
+
+1. **Update Docker Compose File**
+
+    Update the PostgreSQL images in `docker-compose.yml` to the needed version.
+
+    ```yaml
+    waldur-db:
+        container_name: waldur-db
+        image: '${DOCKER_REGISTRY_PREFIX}library/postgres:<your_version>'
+        ...
+    keycloak-db:
+        container_name: keycloak-db
+        image: '${DOCKER_REGISTRY_PREFIX}library/postgres:<your_version>'
+    ```
+
+2. **Pull the New Images**
+
+    Pull the new PostgreSQL images:
+
+    ```bash
+    docker compose pull
+    ```
+
+3. **Optional: Restore Data** *(if backups have been made)*
+
+    Start the database containers to load the dump data:
+
+    ```bash
+    docker compose up -d waldur-db keycloak-db
+    ```
+
+    Restore the contents of the database from the dump file:
+
+    **For Waldur DB:**
+
+    ```bash
+    cat waldur_upgrade_backup.sql | docker exec -i waldur-db psql -U waldur
+    ```
+
+    **For Keycloak DB:**
+
+    ```bash
+    cat keycloak_upgrade_backup.sql | docker exec -i keycloak-db psql -U keycloak
+    ```
+
+    Shut down the containers:
+
+    ```bash
+    docker compose down
+    ```
+
+4. **Start containers**
+
+    Start all of the containers:
+
+    ```bash
+    docker compose up -d
+    ```
+
+5. **Verify the Upgrade**
+
+    Verify the containers are running with the new PostgreSQL version:
+
+    ```bash
+    docker ps -a
+    ```
+
+    Check container logs for errors:
+
+    ```bash
+    docker logs waldur-db
+    docker logs keycloak-db
+    ```
+
 ## Using TLS
 
 This setup supports following types of SSL certificates:
