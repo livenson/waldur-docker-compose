@@ -166,8 +166,9 @@ docker compose down
     For this, run the following lines, which will automatically create necessary tokens for the users.
 
     ```bash
-    export $(cat .env | xargs)
+    export $(cat .env | grep "^POSTGRESQL_PASSWORD=" | xargs)
     docker exec -it waldur-db psql -U waldur -c "ALTER USER waldur WITH PASSWORD '${POSTGRESQL_PASSWORD}';"
+    export $(cat .env | grep "^KEYCLOAK_POSTGRESQL_PASSWORD=" | xargs)
     docker exec -it keycloak-db psql -U keycloak -c "ALTER USER keycloak WITH PASSWORD '${KEYCLOAK_POSTGRESQL_PASSWORD}';"
     ```
 
