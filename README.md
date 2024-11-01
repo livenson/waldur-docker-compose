@@ -160,10 +160,15 @@ docker compose down
     cat keycloak_upgrade_backup.sql | docker exec -i keycloak-db psql -U keycloak
     ```
 
-    Shut down the containers:
+    **Post-update steps**
+
+    If the new psql version is later than 14, you need to create SCRAM tokens for the existing users.
+    For this, run the following lines, which will automatically create necessary tokens for the users.
 
     ```bash
-    docker compose down
+    export $(cat .env | xargs)
+    docker exec -it waldur-db psql -U waldur -c "ALTER USER waldur WITH PASSWORD '${POSTGRESQL_PASSWORD}';"
+    docker exec -it keycloak-db psql -U keycloak -c "ALTER USER keycloak WITH PASSWORD '${KEYCLOAK_POSTGRESQL_PASSWORD}';"
     ```
 
 4. **Start containers**
