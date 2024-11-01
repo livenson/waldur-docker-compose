@@ -69,6 +69,31 @@ docker compose restart
 
 ## Upgrade Instructions for PostgreSQL Images
 
+### Upgrade Script
+
+To simplify the upgrade process, an upgrade script `db-upgrade-script.sh` is included in the root directory, and can be used to automate the upgrade process.
+
+#### Usage Instructions
+
+1. **Ensure the script has execution permissions**:
+
+   ```bash
+   chmod +x db-upgrade-script.sh
+    ```
+
+2. **Update the `WALDUR_POSTGRES_IMAGE_TAG` and `KEYCLOAK_POSTGRES_IMAGE_TAG` in the `.env` file to the desired versions.**:
+
+    ```sh
+    WALDUR_POSTGRES_IMAGE_TAG=<your_version>
+    KEYCLOAK_POSTGRES_IMAGE_TAG=<your_version>
+    ```
+
+3. **Run the sript**:
+
+   ```bash
+   ./db-upgrade-script.sh
+    ```
+
 ### Upgrade Prerequisites
 
 - Backup existing data (if needed).
@@ -116,18 +141,13 @@ docker compose down
 
 ### Upgrade Steps
 
-1. **Update Docker Compose File**
+1. **Update PostgreSQL Versions**
 
-    Update the PostgreSQL images in `docker-compose.yml` to the needed version.
+    Update the `WALDUR_POSTGRES_IMAGE_TAG` and `KEYCLOAK_POSTGRES_IMAGE_TAG` in the `.env` file to the required versions.
 
-    ```yaml
-    waldur-db:
-        container_name: waldur-db
-        image: '${DOCKER_REGISTRY_PREFIX}library/postgres:<your_version>'
-        ...
-    keycloak-db:
-        container_name: keycloak-db
-        image: '${DOCKER_REGISTRY_PREFIX}library/postgres:<your_version>'
+    ```sh
+    WALDUR_POSTGRES_IMAGE_TAG=<your_version>
+    KEYCLOAK_POSTGRES_IMAGE_TAG=<your_version>
     ```
 
 2. **Pull the New Images**
