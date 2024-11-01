@@ -48,6 +48,8 @@ services:
       - POSTGRES_USER=waldur
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
       - POSTGRES_DB=waldur
+      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
     volumes:
       - "./pgsql:/var/lib/postgresql/data"
     healthcheck:
@@ -219,6 +221,8 @@ services:
       - POSTGRES_USER=keycloak
       - POSTGRES_PASSWORD=${KEYCLOAK_POSTGRESQL_PASSWORD}
       - POSTGRES_DB=keycloak
+      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
     volumes:
       - keycloak_db:/var/lib/postgresql/data
     healthcheck:
