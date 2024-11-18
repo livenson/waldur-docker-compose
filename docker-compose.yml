@@ -5,8 +5,9 @@ x-mastermind-environment:
   - GLOBAL_SECRET_KEY=${GLOBAL_SECRET_KEY}
   - POSTGRESQL_HOST=waldur-db
   - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
-  - REDIS_HOST=waldur-queue
-  - REDIS_PASSWORD=${REDIS_PASSWORD}
+  - RABBITMQ_HOST=waldur-queue
+  - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+  - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
   - GLOBAL_DEFAULT_FROM_EMAIL=${GLOBAL_DEFAULT_FROM_EMAIL}
   - SENTRY_DSN=${SENTRY_DSN}
   - GLOBAL_DEBUG=${GLOBAL_DEBUG}
@@ -50,8 +51,10 @@ services:
       - POSTGRES_DB=waldur
       - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
       - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+      - POSTGRES_CELERY_DATABASE=celery_results
     volumes:
       - "./pgsql:/var/lib/postgresql/data"
+      - ./init-celery-database.sh:/docker-entrypoint-initdb.d/init-celery-database.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U waldur"]
       interval: 30s
@@ -59,14 +62,18 @@ services:
       retries: 3
     restart: always
 
-  # Redis
+  # RabbitMQ
   waldur-queue:
     container_name: waldur-queue
-    image: '${DOCKER_REGISTRY_PREFIX}bitnami/redis:latest'
+    image: '${DOCKER_REGISTRY_PREFIX}bitnami/rabbitmq:4.0.2-debian-12-r0'
     environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+    command: "/bin/bash -c \"rabbitmq-plugins enable --offline rabbitmq_mqtt rabbitmq_web_mqtt ; /opt/bitnami/scripts/rabbitmq/run.sh\""
+    volumes:
+      - ${CONFIG_FOLDER}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
     restart: always
-
+  
   # DB migration
   waldur-mastermind-db-migration:
     container_name: waldur-mastermind-db-migration
