@@ -31,6 +31,7 @@ Test compose configuration:
     COMPOSE_INTERACTIVE_NO_CLI: 1
     WALDUR_DOMAIN: docker
     TLS: internal
+    DOCKER_REGISTRY_PREFIX: "registry.hpc.ut.ee/mirror/"
   script:
     - cp -vf .env.example .env
     - echo "DOCKER_REGISTRY_PREFIX=registry.hpc.ut.ee/mirror/" >> .env
