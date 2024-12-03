@@ -39,6 +39,10 @@ Test compose configuration:
     - docker context list
     - docker info
     - docker-compose config
+    - echo "Pulling images:"
+    - docker-compose pull
+    - echo "Images pulled:"
+    - docker images
     - docker-compose up waldur-mastermind-db-migration
     - docker-compose logs --tail=100 waldur-mastermind-db-migration
     - docker-compose up -d
