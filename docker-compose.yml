@@ -82,7 +82,7 @@ services:
     volumes:
       - ${CONFIG_FOLDER}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
     restart: always
-  
+
   # DB migration
   waldur-mastermind-db-migration:
     container_name: waldur-mastermind-db-migration
