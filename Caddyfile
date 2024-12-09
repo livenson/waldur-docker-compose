@@ -25,10 +25,13 @@
     reverse_proxy /health-check/* http://waldur-mastermind-api:80
     reverse_proxy /auth/* http://keycloak:8080
 
-    reverse_proxy /ws http://waldur-queue:15675 {
-        header_up Host {host}
-        header_up X-Forwarded-For {remote}
-        header_up X-Real-IP {remote}
+    route /rmqws {
+      rewrite /rmqws /ws
+      reverse_proxy http://waldur-queue:15675 {
+          header_up Host {host}
+          header_up X-Forwarded-For {remote}
+          header_up X-Real-IP {remote}
+      }
     }
 
     import /etc/caddy-includes/*.conf
