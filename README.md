@@ -302,3 +302,27 @@ All-together /etc/waldur/icons/file_name_from_whitelabeling_directory
 - site_logo
 - login_logo
 - favicon
+
+## Readonly PostgreSQL user configuration
+
+In order to enable /api/query/ endpoint please make sure that read-only user is configured.
+
+```sql
+-- Create a read-only user
+CREATE USER readonly WITH PASSWORD '{readonly_password}'
+
+-- Grant read-only access to the database
+GRANT CONNECT ON DATABASE '{database_name}' TO '{readonly_username}'
+
+-- Grant read-only access to the schema
+GRANT USAGE ON SCHEMA public TO '{readonly_username}'
+
+-- Grant read-only access to existing tables
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO '{readonly_username}'
+
+-- Grant read-only access to future tables
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO '{readonly_username}'
+
+-- Revoke access to authtoken_token table
+REVOKE SELECT ON authtoken_token FROM '{readonly_username}'
+```
