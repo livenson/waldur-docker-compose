@@ -35,20 +35,20 @@ Test compose configuration:
   script:
     - cp -vf .env.example .env
     - echo "DOCKER_REGISTRY_PREFIX=registry.hpc.ut.ee/mirror/" >> .env
-    - docker-compose -v
+    - docker compose version
     - docker context list
     - docker info
-    - docker-compose config
+    - docker compose config
     - echo "Pulling images:"
-    - docker-compose pull
+    - docker compose pull
     - echo "Images pulled:"
     - docker images
-    - docker-compose up waldur-mastermind-db-migration
-    - docker-compose logs --tail=100 waldur-mastermind-db-migration
-    - docker-compose up -d
-    - docker-compose ps
-    - docker-compose exec waldur-mastermind-worker status
-    - docker-compose exec waldur-mastermind-worker waldur createstaffuser -u admin -p password -e admin@example.com
+    - docker compose up waldur-mastermind-db-migration
+    - docker compose logs --tail=100 waldur-mastermind-db-migration
+    - docker compose up -d
+    - docker compose ps
+    - docker compose exec waldur-mastermind-worker status
+    - docker compose exec waldur-mastermind-worker waldur createstaffuser -u admin -p password -e admin@example.com
     # Using `docker` host due to docker networking model:
     # Accessing directly to the `dind` service
     - curl -k -i https://docker | grep 200
@@ -69,7 +69,6 @@ Test compose configuration:
         echo "- [$item_cap]($item-api.md)" >> docs/index.md
       done
   before_script:
-    - apk add docker-compose
     - apk add curl
     - |
       if [ "$TRIGGER_PROJECT_NAME" == "waldur-mastermind" ]; then
