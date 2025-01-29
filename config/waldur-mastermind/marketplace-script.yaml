@@ -1,1 +1,2 @@
-DOCKER_SCRIPT_DIR: /opt/waldur-script-launchzone
+DOCKER_SCRIPT_DIR: /var/lib/waldur/waldur-script-launchzone
+DOCKER_CLIENT: {"base_url": "unix://var/lib/waldur/docker.sock"}
