@@ -35,6 +35,12 @@ Test compose configuration:
   script:
     - cp -vf .env.example .env
     - echo "DOCKER_REGISTRY_PREFIX=registry.hpc.ut.ee/mirror/" >> .env
+    - |
+      if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ]; then
+        echo "Testing using latest images"
+        sed -i 's/WALDUR_MASTERMIND_IMAGE_TAG=.*/WALDUR_MASTERMIND_IMAGE_TAG=latest/' .env
+        sed -i 's/WALDUR_HOMEPORT_IMAGE_TAG=.*/WALDUR_HOMEPORT_IMAGE_TAG=latest/' .env
+      fi
     - docker compose version
     - docker context list
     - docker info
