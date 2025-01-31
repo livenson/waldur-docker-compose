@@ -30,7 +30,6 @@ x-mastermind-volumes:
   - ${CONFIG_FOLDER}/waldur-mastermind/marketplace.yaml:/etc/waldur/marketplace.yaml
   - ${CONFIG_FOLDER}/waldur-mastermind/marketplace-script.yaml:/etc/waldur/marketplace-script.yaml
   - ${CONFIG_FOLDER}/whitelabeling:/etc/waldur/icons
-  - ${LIB_FOLDER}:/var/lib/waldur
   - /var/run/docker.sock:/var/run/docker.sock
   - waldur_script_launchzone:/var/lib/waldur/waldur-script-launchzone
 
