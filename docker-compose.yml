@@ -85,6 +85,7 @@ services:
   waldur-mastermind-db-migration:
     container_name: waldur-mastermind-db-migration
     image: '${DOCKER_REGISTRY_PREFIX}opennode/waldur-mastermind:${WALDUR_MASTERMIND_IMAGE_TAG}'
+    user: $DOCKER_USER
     environment: *default-mastermind-env
     volumes: *default-mastermind-volumes
     depends_on:
@@ -98,6 +99,7 @@ services:
   waldur-mastermind-whitelabeling-init:
     container_name: waldur-mastermind-whitelabeling-init
     image: '${DOCKER_REGISTRY_PREFIX}opennode/waldur-mastermind:${WALDUR_MASTERMIND_IMAGE_TAG}'
+    user: $DOCKER_USER
     environment: *default-mastermind-env
     volumes: *default-mastermind-volumes
     depends_on:
@@ -109,6 +111,7 @@ services:
   waldur-mastermind-worker:
     container_name: waldur-mastermind-worker
     image: '${DOCKER_REGISTRY_PREFIX}opennode/waldur-mastermind:${WALDUR_MASTERMIND_IMAGE_TAG}'
+    user: $DOCKER_USER
     environment: *default-mastermind-env
     volumes: *default-mastermind-volumes
     depends_on:
@@ -131,6 +134,7 @@ services:
   waldur-mastermind-beat:
     container_name: waldur-mastermind-beat
     image: '${DOCKER_REGISTRY_PREFIX}opennode/waldur-mastermind:${WALDUR_MASTERMIND_IMAGE_TAG}'
+    user: $DOCKER_USER
     environment: *default-mastermind-env
     volumes: *default-mastermind-volumes
     depends_on:
@@ -146,6 +150,7 @@ services:
   waldur-mastermind-api:
     container_name: waldur-mastermind-api
     image: '${DOCKER_REGISTRY_PREFIX}opennode/waldur-mastermind:${WALDUR_MASTERMIND_IMAGE_TAG}'
+    user: $DOCKER_USER
     environment: *default-mastermind-env
     volumes: *default-mastermind-volumes
     depends_on:
